@@ -93,11 +93,6 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 		return nil, 0, err
 	}
 
-	articleTags, err = svc.dao.GetArticleTagListByAIDs(articleIDs)
-	if err != nil {
-		return nil, 0, err
-	}
-
 	tags, err := svc.dao.GetTagListByIDs(tagIDs, model.STATE_OPEN)
 	if err != nil {
 		return nil, 0, err
