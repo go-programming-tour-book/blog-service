@@ -127,7 +127,17 @@ func (a Article) Create(c *gin.Context) {
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [put]
-func (a Article) Update(c *gin.Context) {}
+func (a Article) Update(c *gin.Context) {
+	param := service.UpdateArticleRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if valid == true {
+		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+}
 
 // @Summary 删除文章
 // @Produce  json

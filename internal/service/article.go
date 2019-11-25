@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/go-programming-tour-book/blog-service/internal/dao"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 )
@@ -123,13 +124,14 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 }
 
 func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
-	article, err := svc.dao.CreateArticle(
-		param.Title,
-		param.Desc,
-		param.Content,
-		param.CoverImageUrl,
-		param.State,
-	)
+	article, err := svc.dao.CreateArticle(&dao.Article{
+		Title:         param.Title,
+		Desc:          param.Desc,
+		Content:       param.Content,
+		CoverImageUrl: param.CoverImageUrl,
+		State:         param.State,
+		CreatedBy:     param.CreatedBy,
+	})
 	if err != nil {
 		return err
 	}
@@ -140,4 +142,8 @@ func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
 	}
 
 	return nil
+}
+
+func (svc *Service) UpdateArticle(param *UpdateArticleRequest) error {
+
 }
