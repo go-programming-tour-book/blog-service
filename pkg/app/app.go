@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
@@ -34,9 +35,6 @@ func (r *Response) ToResponse(data interface{}) {
 }
 
 func (r *Response) ToResponseList(list interface{}, totalRows int) {
-	if list == nil {
-		list = gin.H{}
-	}
 	r.Ctx.JSON(http.StatusOK, gin.H{
 		"list": list,
 		"pager": Pager{
@@ -55,4 +53,12 @@ func (r *Response) ToErrorResponse(err *errcode.Error) {
 	}
 
 	r.Ctx.JSON(err.StatusCode(), response)
+}
+
+func IsNil(i interface{}) bool {
+	vi := reflect.ValueOf(i)
+	if vi.Kind() == reflect.Ptr {
+		return vi.IsNil()
+	}
+	return false
 }

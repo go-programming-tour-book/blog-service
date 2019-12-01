@@ -10,6 +10,10 @@ type ArticleTag struct {
 	ArticleID uint32 `json:"article_id"`
 }
 
+func (a ArticleTag) TableName() string {
+	return "blog_article_tag"
+}
+
 func (t ArticleTag) GetByAID(db *gorm.DB) (ArticleTag, error) {
 	var articleTag ArticleTag
 	err := db.Where("article_id = ? AND is_del = ?", t.ArticleID, 0).First(&articleTag).Error

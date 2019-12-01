@@ -11,6 +11,10 @@ type Tag struct {
 	State uint8  `json:"state,omitempty"`
 }
 
+func (a Tag) TableName() string {
+	return "blog_tag"
+}
+
 type TagSwagger struct {
 	List  []*Tag
 	Pager *app.Pager
