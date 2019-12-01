@@ -5,6 +5,7 @@ import (
 	"github.com/go-programming-tour-book/blog-service/global"
 	"github.com/go-programming-tour-book/blog-service/internal/service"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
+	"github.com/go-programming-tour-book/blog-service/pkg/convert"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
 )
 
@@ -22,7 +23,9 @@ func NewArticle() Article {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [get]
 func (a Article) Get(c *gin.Context) {
-	param := service.ArticleRequest{}
+	param := service.ArticleRequest{
+		ID: convert.StrTo(c.Param("id")).MustUInt32(),
+	}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if valid == true {
@@ -128,7 +131,9 @@ func (a Article) Create(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [put]
 func (a Article) Update(c *gin.Context) {
-	param := service.UpdateArticleRequest{}
+	param := service.UpdateArticleRequest{
+		ID: convert.StrTo(c.Param("id")).MustUInt32(),
+	}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if valid == true {
@@ -137,6 +142,16 @@ func (a Article) Update(c *gin.Context) {
 		return
 	}
 
+	svc := service.New()
+	err := svc.UpdateArticle(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.UpdateArticle err: %v", err)
+		response.ToErrorResponse(errcode.ERROR_UPDATE_ARTICLE_FAIL)
+		return
+	}
+
+	response.ToResponse(gin.H{})
+	return
 }
 
 // @Summary 删除文章
@@ -146,4 +161,26 @@ func (a Article) Update(c *gin.Context) {
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [delete]
-func (a Article) Delete(c *gin.Context) {}
+func (a Article) Delete(c *gin.Context) {
+	param := service.DeleteArticleRequest{
+		ID: convert.StrTo(c.Param("id")).MustUInt32(),
+	}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if valid == true {
+		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+
+	svc := service.New()
+	err := svc.DeleteArticle(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.DeleteArticle err: %v", err)
+		response.ToErrorResponse(errcode.ERROR_DELETE_ARTICLE_FAIL)
+		return
+	}
+
+	response.ToResponse(gin.H{})
+	return
+}

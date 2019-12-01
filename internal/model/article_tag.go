@@ -1,6 +1,8 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type ArticleTag struct {
 	*Model
@@ -8,10 +10,11 @@ type ArticleTag struct {
 	ArticleID uint32 `json:"article_id"`
 }
 
-func (t ArticleTag) GetByAID(db *gorm.DB) (*ArticleTag, error) {
-	var articleTag *ArticleTag
-	if err := db.Where("article_id = ? AND is_del = ?", t.ArticleID, 0).First(&articleTag).Error; err != nil {
-		return nil, err
+func (t ArticleTag) GetByAID(db *gorm.DB) (ArticleTag, error) {
+	var articleTag ArticleTag
+	err := db.Where("article_id = ? AND is_del = ?", t.ArticleID, 0).First(&articleTag).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return articleTag, err
 	}
 
 	return articleTag, nil
@@ -44,8 +47,8 @@ func (t ArticleTag) Create(db *gorm.DB) error {
 	return nil
 }
 
-func (t ArticleTag) Update(db *gorm.DB, values interface{}) error {
-	if err := db.Model(t).Updates(values).Where("id = ? AND is_del = ?", t.ID).Error; err != nil {
+func (t ArticleTag) UpdateOne(db *gorm.DB, values interface{}) error {
+	if err := db.Model(&t).Where("article_id = ? AND is_del = ?", t.ArticleID, 0).Limit(1).Updates(values).Error; err != nil {
 		return err
 	}
 
@@ -54,6 +57,14 @@ func (t ArticleTag) Update(db *gorm.DB, values interface{}) error {
 
 func (t ArticleTag) Delete(db *gorm.DB) error {
 	if err := db.Where("id = ? AND is_del = ?", t.Model.ID, 0).Delete(&t).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t ArticleTag) DeleteOne(db *gorm.DB) error {
+	if err := db.Where("article_id = ? AND is_del = ?", t.ArticleID, 0).Delete(&t).Limit(1).Error; err != nil {
 		return err
 	}
 

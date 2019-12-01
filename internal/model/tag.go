@@ -7,8 +7,8 @@ import (
 
 type Tag struct {
 	*Model
-	Name  string `json:"name"`
-	State uint8  `json:"state"`
+	Name  string `json:"name,omitempty"`
+	State uint8  `json:"state,omitempty"`
 }
 
 type TagSwagger struct {
@@ -53,10 +53,11 @@ func (t Tag) ListByIDs(db *gorm.DB, ids []uint32) ([]*Tag, error) {
 	return tags, nil
 }
 
-func (t Tag) Get(db *gorm.DB) (*Tag, error) {
-	var tag *Tag
-	if err := db.Where("id = ? AND is_del = ? AND state = ?", t.ID, 0, t.State).First(&tag).Error; err != nil {
-		return nil, err
+func (t Tag) Get(db *gorm.DB) (Tag, error) {
+	var tag Tag
+	err := db.Where("id = ? AND is_del = ? AND state = ?", t.ID, 0, t.State).First(&tag).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return tag, err
 	}
 
 	return tag, nil
@@ -71,7 +72,7 @@ func (t Tag) Create(db *gorm.DB) error {
 }
 
 func (t Tag) Update(db *gorm.DB, values interface{}) error {
-	if err := db.Model(t).Updates(values).Where("id = ? AND is_del = ?", t.ID).Error; err != nil {
+	if err := db.Model(&t).Where("id = ? AND is_del = ?", t.ID, 0).Updates(values).Error; err != nil {
 		return err
 	}
 
