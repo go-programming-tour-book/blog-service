@@ -89,22 +89,19 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 		return nil, 0, err
 	}
 
-	var articleResults []*Article
+	var articleList []*Article
 	for _, article := range articles {
-		articleResults = append(articleResults, &Article{
+		articleList = append(articleList, &Article{
 			ID:            article.ArticleID,
 			Title:         article.ArticleTitle,
 			Desc:          article.ArticleDesc,
 			Content:       article.Content,
 			CoverImageUrl: article.CoverImageUrl,
-			Tag: &model.Tag{
-				Model: &model.Model{ID: article.TagID},
-				Name:  article.TagName,
-			},
+			Tag:           &model.Tag{Model: &model.Model{ID: article.TagID}, Name: article.TagName},
 		})
 	}
 
-	return articleResults, articleCount, nil
+	return articleList, articleCount, nil
 }
 
 func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
