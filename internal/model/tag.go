@@ -7,8 +7,8 @@ import (
 
 type Tag struct {
 	*Model
-	Name  string `json:"name,omitempty"`
-	State uint8  `json:"state,omitempty"`
+	Name  string `json:"name"`
+	State uint8  `json:"state"`
 }
 
 func (a Tag) TableName() string {

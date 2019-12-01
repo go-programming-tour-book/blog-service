@@ -6,16 +6,6 @@ import (
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 )
 
-type Article struct {
-	ID            uint32     `json:"id,omitempty"`
-	Title         string     `json:"title,omitempty"`
-	Desc          string     `json:"desc,omitempty"`
-	Content       string     `json:"content,omitempty"`
-	CoverImageUrl string     `json:"cover_image_url,omitempty"`
-	State         uint8      `json:"state,omitempty"`
-	Tag           *model.Tag `json:"tag,omitempty"`
-}
-
 type ArticleRequest struct {
 	ID    uint32 `form:"id" binding:"required,gte=1"`
 	State uint8  `form:"state,default=1" binding:"oneof=0 1"`
@@ -49,6 +39,16 @@ type UpdateArticleRequest struct {
 
 type DeleteArticleRequest struct {
 	ID uint32 `form:"id" binding:"required,gte=1"`
+}
+
+type Article struct {
+	ID            uint32     `json:"id"`
+	Title         string     `json:"title"`
+	Desc          string     `json:"desc"`
+	Content       string     `json:"content"`
+	CoverImageUrl string     `json:"cover_image_url"`
+	State         uint8      `json:"state"`
+	Tag           *model.Tag `json:"tag"`
 }
 
 func (svc *Service) GetArticle(param *ArticleRequest) (*Article, error) {

@@ -14,34 +14,34 @@ type Article struct {
 	State         uint8  `json:"state"`
 }
 
-func (a Article) TableName() string {
-	return "blog_article"
-}
-
 type ArticleSwagger struct {
 	List  []*Article
 	Pager *app.Pager
 }
 
-func (t Article) Create(db *gorm.DB) (*Article, error) {
-	if err := db.Create(&t).Error; err != nil {
+func (a Article) TableName() string {
+	return "blog_article"
+}
+
+func (a Article) Create(db *gorm.DB) (*Article, error) {
+	if err := db.Create(&a).Error; err != nil {
 		return nil, err
 	}
 
-	return &t, nil
+	return &a, nil
 }
 
-func (t Article) Update(db *gorm.DB, values interface{}) error {
-	if err := db.Model(t).Updates(values).Where("id = ? AND is_del = ?", t.ID).Error; err != nil {
+func (a Article) Update(db *gorm.DB, values interface{}) error {
+	if err := db.Model(&a).Updates(values).Where("id = ? AND is_del = ?", a.ID).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (t Article) Get(db *gorm.DB) (Article, error) {
+func (a Article) Get(db *gorm.DB) (Article, error) {
 	var article Article
-	db = db.Where("id = ? AND state = ? AND is_del = ?", t.ID, t.State, 0)
+	db = db.Where("id = ? AND state = ? AND is_del = ?", a.ID, a.State, 0)
 	err := db.First(&article).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return article, err
@@ -50,20 +50,12 @@ func (t Article) Get(db *gorm.DB) (Article, error) {
 	return article, nil
 }
 
-func (t Article) CountByTagID(db *gorm.DB, tagID uint32) (int, error) {
-	var count int
-	err := db.Table("`blog_article_tag` AS article_tag").
-		Joins("LEFT JOIN `blog_tag` AS tag ON article_tag.tag_id = tag.id").
-		Joins("LEFT JOIN `blog_article` AS article ON article_tag.article_id = article.id ").
-		Where("article_tag.`tag_id` = ?", tagID).
-		Where("article.state = ?", t.State).
-		Where("article.is_del = 0").
-		Count(&count).Error
-	if err != nil {
-		return 0, err
+func (a Article) Delete(db *gorm.DB) error {
+	if err := db.Where("id = ? AND is_del = ?", a.Model.ID, 0).Delete(&a).Error; err != nil {
+		return err
 	}
 
-	return count, nil
+	return nil
 }
 
 type ArticleRow struct {
@@ -76,56 +68,46 @@ type ArticleRow struct {
 	Content       string
 }
 
-func (t Article) ListByTagID(db *gorm.DB, tagID uint32, pageOffset, pageSize int) ([]*ArticleRow, error) {
-	fields := []string{
-		"article.id AS article_id",
-		"article.title AS article_title",
-		"article.desc AS article_desc",
-		"article.cover_image_url",
-		"article.content",
-		"article_tag.id AS tag_id",
-		"tag.name AS tag_name",
-	}
+func (a Article) ListByTagID(db *gorm.DB, tagID uint32, pageOffset, pageSize int) ([]*ArticleRow, error) {
+	fields := []string{"ar.id AS article_id", "ar.title AS article_title", "ar.desc AS article_desc", "ar.cover_image_url", "ar.content"}
+	fields = append(fields, []string{"t.id AS tag_id", "t.name AS tag_name"}...)
+
 	if pageOffset >= 0 && pageSize > 0 {
 		db = db.Offset(pageOffset).Limit(pageSize)
 	}
-	rows, err := db.Select(fields).Table(ArticleTag{}.TableName()+" AS article_tag").
-		Joins("LEFT JOIN "+Tag{}.TableName()+" AS tag ON article_tag.tag_id = tag.id").
-		Joins("LEFT JOIN "+Article{}.TableName()+" AS article ON article_tag.article_id = article.id ").
-		Where("article_tag.`tag_id` = ?", tagID).
-		Where("article.state = ?", t.State).
-		Where("article.is_del = 0").
+	rows, err := db.Select(fields).Table(ArticleTag{}.TableName()+" AS at").
+		Joins("LEFT JOIN `?` AS t ON at.tag_id = t.id", Tag{}.TableName()).
+		Joins("LEFT JOIN `?` AS ar ON at.article_id = ar.id", Article{}.TableName()).
+		Where("at.`tag_id` = ? AND ar.state = ? AND ar.is_del = ?", tagID, a.State, 0).
 		Rows()
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var articleRows []*ArticleRow
+	var articles []*ArticleRow
 	for rows.Next() {
-		articleRow := &ArticleRow{}
-		if err := rows.Scan(
-			&articleRow.ArticleID,
-			&articleRow.ArticleTitle,
-			&articleRow.ArticleDesc,
-			&articleRow.CoverImageUrl,
-			&articleRow.Content,
-			&articleRow.TagID,
-			&articleRow.TagName,
-		); err != nil {
+		r := &ArticleRow{}
+		if err := rows.Scan(&r.ArticleID, &r.ArticleTitle, &r.ArticleDesc, &r.CoverImageUrl, &r.Content, &r.TagID, &r.TagName); err != nil {
 			return nil, err
 		}
 
-		articleRows = append(articleRows, articleRow)
+		articles = append(articles, r)
 	}
 
-	return articleRows, nil
+	return articles, nil
 }
 
-func (t Article) Delete(db *gorm.DB) error {
-	if err := db.Where("id = ? AND is_del = ?", t.Model.ID, 0).Delete(&t).Error; err != nil {
-		return err
+func (a Article) CountByTagID(db *gorm.DB, tagID uint32) (int, error) {
+	var count int
+	err := db.Table(ArticleTag{}.TableName()+" AS at").
+		Joins("LEFT JOIN `?` AS t ON at.tag_id = t.id", Tag{}.TableName()).
+		Joins("LEFT JOIN `?` AS ar ON at.article_id = ar.id", Article{}.TableName()).
+		Where("at.`tag_id` = ? AND ar.state = ? AND ar.is_del = ?", tagID, a.State, 0).
+		Count(&count).Error
+	if err != nil {
+		return 0, err
 	}
 
-	return nil
+	return count, nil
 }
