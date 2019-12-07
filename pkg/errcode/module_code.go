@@ -12,4 +12,6 @@ var (
 	ERROR_CREATE_ARTICLE_FAIL = NewError(20020003, "创建文章失败")
 	ERROR_UPDATE_ARTICLE_FAIL = NewError(20020004, "更新文章失败")
 	ERROR_DELETE_ARTICLE_FAIL = NewError(20020005, "删除文章失败")
+
+	ERROR_UPLOAD_FILE_FAIL = NewError(20030001, "上传文件失败")
 )
