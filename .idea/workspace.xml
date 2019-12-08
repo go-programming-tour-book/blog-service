@@ -2,18 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ac0534ad-6631-4d88-8f3b-30d237216e4b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/routers/api/upload.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/service/upload.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/upload/file.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/util/md5.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/routers/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/routers/router.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/errcode/errcode.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/errcode/errcode.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/errcode/module_code.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/errcode/module_code.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/setting/section.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/setting/section.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/routers/api/upload.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/routers/api/upload.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/upload.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/upload.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/upload/file.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/upload/file.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/logs/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/storage/logs/app.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,6 +32,7 @@
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="GitIgnore" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
     <property name="configurable.Module.GOPATH.is.expanded" value="false" />
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />

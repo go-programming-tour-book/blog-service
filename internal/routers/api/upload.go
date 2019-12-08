@@ -38,6 +38,6 @@ func (u *Upload) UploadFile(c *gin.Context) {
 	}
 
 	response.ToResponse(gin.H{
-		"file_url": global.AppSetting.UploadServerUrl + "/" + fileInfo.Name,
+		"file_access_url": fileInfo.AccessUrl,
 	})
 }

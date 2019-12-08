@@ -17,29 +17,33 @@ type FileType int
 const TypeImage FileType = iota + 1
 
 func GetFileName(name string) string {
-	ext := path.Ext(name)
+	ext := GetFileExt(name)
 	fileName := strings.TrimSuffix(name, ext)
 	fileName = util.EncodeMD5(fileName)
 
 	return fileName + ext
 }
 
-func GetFileExt(fileName string) string {
-	return path.Ext(fileName)
+func GetFileExt(name string) string {
+	return path.Ext(name)
 }
 
 func GetSavePath() string {
 	return global.AppSetting.UploadSavePath
 }
 
+func GetServerUrl() string {
+	return global.AppSetting.UploadServerUrl
+}
+
 func CheckSavePath(dst string) bool {
 	_, err := os.Stat(dst)
 
-	return !os.IsNotExist(err)
+	return os.IsNotExist(err)
 }
 
-func CheckExt(t FileType, fileName string) bool {
-	ext := GetFileExt(fileName)
+func CheckContainExt(t FileType, name string) bool {
+	ext := GetFileExt(name)
 	switch t {
 	case TypeImage:
 		for _, allowExt := range global.AppSetting.UploadImageAllowExts {
@@ -58,7 +62,7 @@ func CheckMaxSize(t FileType, f multipart.File) bool {
 	size := len(content)
 	switch t {
 	case TypeImage:
-		if size >= global.AppSetting.UploadImageMaxSize {
+		if size >= global.AppSetting.UploadImageMaxSize*1024*1024 {
 			return true
 		}
 	}
@@ -69,7 +73,7 @@ func CheckMaxSize(t FileType, f multipart.File) bool {
 func CheckPermission(dst string) bool {
 	_, err := os.Stat(dst)
 
-	return !os.IsPermission(err)
+	return os.IsPermission(err)
 }
 
 func CreateSavePath(dst string, perm os.FileMode) error {
