@@ -10,13 +10,7 @@ import (
 	"github.com/go-programming-tour-book/blog-service/pkg/upload"
 )
 
-type Upload struct{}
-
-func NewUpload() Upload {
-	return Upload{}
-}
-
-func (u *Upload) UploadFile(c *gin.Context) {
+func UploadFile(c *gin.Context) {
 	response := app.NewResponse(c)
 	file, fileHeader, err := c.Request.FormFile("file")
 	fileType := convert.StrTo(c.PostForm("type")).MustInt()

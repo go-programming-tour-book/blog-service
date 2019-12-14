@@ -38,10 +38,6 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return databaseSetting.TablePrefix + defaultTableName
-	}
-
 	if global.ServerSetting.RunMode == "debug" {
 		db.LogMode(true)
 	}

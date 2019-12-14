@@ -16,6 +16,10 @@ App:
     - .jpg
     - .jpeg
     - .png
+JWT:
+  Secret: eddycjy
+  Issuer: blog-service
+  Expire: 7200
 Database:
   DBType: mysql
   UserName: root
