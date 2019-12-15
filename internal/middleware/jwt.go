@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"time"
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
@@ -15,11 +15,14 @@ func JWT() gin.HandlerFunc {
 		if token == "" {
 			ecode = errcode.InvalidParams
 		} else {
-			claims, err := app.ParseToken(token)
+			_, err := app.ParseToken(token)
 			if err != nil {
-				ecode = errcode.UnauthorizedTokenError
-			} else if time.Now().Unix() > claims.ExpiresAt {
-				ecode = errcode.UnauthorizedTokenTimeout
+				switch err.(*jwt.ValidationError).Errors {
+				case jwt.ValidationErrorExpired:
+					ecode = errcode.UnauthorizedTokenTimeout
+				default:
+					ecode = errcode.UnauthorizedTokenError
+				}
 			}
 		}
 
