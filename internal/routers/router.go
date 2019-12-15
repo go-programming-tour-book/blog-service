@@ -16,8 +16,13 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+	if global.ServerSetting.RunMode == "debug" {
+		r.Use(gin.Recovery())
+	} else {
+		r.Use(middleware.Recovery())
+	}
 	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
+	r.Use(middleware.AccessLog())
 	r.Use(middleware.Translations())
 
 	article := v1.NewArticle()
