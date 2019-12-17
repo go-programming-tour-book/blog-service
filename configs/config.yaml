@@ -16,6 +16,15 @@ App:
     - .jpg
     - .jpeg
     - .png
+Email:
+  Host: smtp.qq.com
+  Port: 465
+  UserName: 313687982@qq.com
+  Password: hvordwejlzpbbhfh
+  IsSSL: true
+  From: 313687982@qq.com
+  To:
+    - 313687982@qq.com
 JWT:
   Secret: eddycjy
   Issuer: blog-service

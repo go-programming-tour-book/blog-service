@@ -23,6 +23,16 @@ type AppSettingS struct {
 	UploadImageAllowExts []string
 }
 
+type EmailSettingS struct {
+	Host     string
+	Port     int
+	UserName string
+	Password string
+	IsSSL    bool
+	From     string
+	To       []string
+}
+
 type JWTSettingS struct {
 	Secret string
 	Issuer string
