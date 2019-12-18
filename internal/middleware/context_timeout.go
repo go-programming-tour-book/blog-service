@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AppTimeout(second int) func(c *gin.Context) {
+func ContextTimeout(second int) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), time.Duration(second)*time.Second)
 		defer cancel()
