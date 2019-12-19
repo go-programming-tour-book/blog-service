@@ -2,6 +2,9 @@ package routers
 
 import (
 	"net/http"
+	"time"
+
+	"github.com/go-programming-tour-book/blog-service/pkg/limiter"
 
 	"github.com/go-programming-tour-book/blog-service/global"
 
@@ -21,9 +24,16 @@ func NewRouter() *gin.Engine {
 	} else {
 		r.Use(middleware.Recovery())
 	}
+
 	r.Use(gin.Logger())
 	r.Use(middleware.AccessLog())
 	r.Use(middleware.Translations())
+	r.Use(middleware.RateLimiter(limiter.NewMethodLimiter().AddBuckets(limiter.LimiterBucketRule{
+		Key:          "/auth",
+		FillInterval: time.Second,
+		Capacity:     5,
+		Quantum:      5,
+	})))
 	r.Use(middleware.ContextTimeout(5))
 
 	article := v1.NewArticle()
