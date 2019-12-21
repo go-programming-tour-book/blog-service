@@ -17,24 +17,26 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
+var methodLimiters = limiter.NewMethodLimiter().AddBuckets(limiter.LimiterBucketRule{
+	Key:          "/auth",
+	FillInterval: time.Second,
+	Capacity:     10,
+	Quantum:      10,
+})
+
 func NewRouter() *gin.Engine {
 	r := gin.New()
 	if global.ServerSetting.RunMode == "debug" {
+		r.Use(gin.Logger())
 		r.Use(gin.Recovery())
 	} else {
+		r.Use(middleware.AccessLog())
 		r.Use(middleware.Recovery())
 	}
 
-	r.Use(gin.Logger())
-	r.Use(middleware.AccessLog())
+	r.Use(middleware.RateLimiter(methodLimiters))
+	r.Use(middleware.ContextTimeout(global.AppSetting.DefaultContextTimeout))
 	r.Use(middleware.Translations())
-	r.Use(middleware.RateLimiter(limiter.NewMethodLimiter().AddBuckets(limiter.LimiterBucketRule{
-		Key:          "/auth",
-		FillInterval: time.Second,
-		Capacity:     5,
-		Quantum:      5,
-	})))
-	r.Use(middleware.ContextTimeout(5))
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()
