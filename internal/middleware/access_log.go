@@ -33,6 +33,8 @@ func AccessLog() gin.HandlerFunc {
 		fields := logger.Fields{
 			"request":  c.Request.PostForm.Encode(),
 			"response": bodyWriter.body.String(),
+			"span_id":  c.MustGet("X-Span-ID"),
+			"trace_id": c.MustGet("X-Trace-ID"),
 		}
 		global.Logger.WithFields(fields).Infof("access log: method: %s, status_code: %d, begin_time: %d, end_time: %d",
 			c.Request.Method,
