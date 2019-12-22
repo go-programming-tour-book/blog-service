@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-programming-tour-book/blog-service/pkg/tracer"
+
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-programming-tour-book/blog-service/global"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
@@ -31,6 +33,10 @@ func init() {
 	err = setupValidator()
 	if err != nil {
 		log.Fatalf("init.setupValidator err: %v", err)
+	}
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("init.setupTracer err: %v", err)
 	}
 }
 
@@ -110,5 +116,14 @@ func setupValidator() error {
 	global.ValidatorV9.Engine()
 	binding.Validator = global.ValidatorV9
 
+	return nil
+}
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer("blog-service", "127.0.0.1:6831")
+	if err != nil {
+		return err
+	}
+	global.Tracer = jaegerTracer
 	return nil
 }
