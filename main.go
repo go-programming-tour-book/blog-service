@@ -1,12 +1,14 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/go-programming-tour-book/blog-service/pkg/tracer"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-programming-tour-book/blog-service/global"
 	"github.com/go-programming-tour-book/blog-service/internal/model"
@@ -38,6 +40,8 @@ func init() {
 	if err != nil {
 		log.Fatalf("init.setupTracer err: %v", err)
 	}
+
+	setupFlag()
 }
 
 // @title 博客系统
@@ -45,6 +49,7 @@ func init() {
 // @description Go 编程之旅：一起用 Go 做项目
 // @termsOfService https://github.com/go-programming-tour-book
 func main() {
+	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
 		Addr:           ":" + global.ServerSetting.HttpPort,
@@ -126,4 +131,21 @@ func setupTracer() error {
 	}
 	global.Tracer = jaegerTracer
 	return nil
+}
+
+var (
+	port    string
+	runMode string
+)
+
+func setupFlag() {
+	flag.StringVar(&port, "port", "", "启动端口")
+	flag.StringVar(&runMode, "mode", "", "启动模式")
+	flag.Parse()
+	if port != "" {
+		global.ServerSetting.HttpPort = port
+	}
+	if runMode != "" {
+		global.ServerSetting.RunMode = runMode
+	}
 }
