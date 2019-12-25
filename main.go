@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-programming-tour-book/blog-service/pkg/tracer"
@@ -19,8 +20,18 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+var (
+	port    string
+	runMode string
+	config  string
+)
+
 func init() {
-	err := setupSetting()
+	err := setupFlag()
+	if err != nil {
+		log.Fatalf("init.setupFlag err: %v", err)
+	}
+	err = setupSetting()
 	if err != nil {
 		log.Fatalf("init.setupSetting err: %v", err)
 	}
@@ -40,8 +51,6 @@ func init() {
 	if err != nil {
 		log.Fatalf("init.setupTracer err: %v", err)
 	}
-
-	setupFlag()
 }
 
 // @title 博客系统
@@ -61,8 +70,17 @@ func main() {
 	s.ListenAndServe()
 }
 
+func setupFlag() error {
+	flag.StringVar(&port, "port", "", "启动端口")
+	flag.StringVar(&runMode, "mode", "", "启动模式")
+	flag.StringVar(&config, "config", "configs/", "指定要使用的配置文件路径")
+	flag.Parse()
+
+	return nil
+}
+
 func setupSetting() error {
-	s, err := setting.NewSetting()
+	s, err := setting.NewSetting(strings.Split(config, ",")...)
 	if err != nil {
 		return err
 	}
@@ -91,6 +109,12 @@ func setupSetting() error {
 	global.JWTSetting.Expire *= time.Second
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
+	if port != "" {
+		global.ServerSetting.HttpPort = port
+	}
+	if runMode != "" {
+		global.ServerSetting.RunMode = runMode
+	}
 
 	return nil
 }
@@ -131,21 +155,4 @@ func setupTracer() error {
 	}
 	global.Tracer = jaegerTracer
 	return nil
-}
-
-var (
-	port    string
-	runMode string
-)
-
-func setupFlag() {
-	flag.StringVar(&port, "port", "", "启动端口")
-	flag.StringVar(&runMode, "mode", "", "启动模式")
-	flag.Parse()
-	if port != "" {
-		global.ServerSetting.HttpPort = port
-	}
-	if runMode != "" {
-		global.ServerSetting.RunMode = runMode
-	}
 }
