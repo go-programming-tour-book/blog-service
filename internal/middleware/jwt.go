@@ -10,8 +10,15 @@ import (
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ecode := errcode.Success
-		token := c.GetHeader("token")
+		var (
+			token string
+			ecode = errcode.Success
+		)
+		if s, exist := c.GetQuery("token"); exist {
+			token = s
+		} else {
+			token = c.GetHeader("token")
+		}
 		if token == "" {
 			ecode = errcode.InvalidParams
 		} else {

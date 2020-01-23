@@ -40,7 +40,7 @@ func (t Tag) List(c *gin.Context) {
 		Page:     app.GetPage(c),
 		PageSize: app.GetPageSize(c),
 	}
-	totalRows, err := svc.CountTag(&service.CountTagRequest{State: param.State})
+	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
 	if err != nil {
 		global.Logger.Errorf("svc.CountTag err: %v", err)
 		response.ToErrorResponse(errcode.ERROR_COUNT_TAG_FAIL)

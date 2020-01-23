@@ -21,8 +21,8 @@ func (d *Dao) GetTagListByIDs(ids []uint32, state uint8) ([]*model.Tag, error) {
 	return tag.ListByIDs(d.engine, ids)
 }
 
-func (d *Dao) CountTag(state uint8) (int, error) {
-	tag := model.Tag{State: state}
+func (d *Dao) CountTag(name string, state uint8) (int, error) {
+	tag := model.Tag{Name: name, State: state}
 	return tag.Count(d.engine)
 }
 
