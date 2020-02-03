@@ -141,9 +141,9 @@ func setupDBEngine() error {
 }
 
 func setupValidator() error {
-	global.ValidatorV9 = validator.NewValidatorV9()
-	global.ValidatorV9.Engine()
-	binding.Validator = global.ValidatorV9
+	global.Validator = validator.NewCustomValidator()
+	global.Validator.Engine()
+	binding.Validator = global.Validator
 
 	return nil
 }

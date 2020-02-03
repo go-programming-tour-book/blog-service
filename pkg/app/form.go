@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	ut "github.com/go-playground/universal-translator"
-	"gopkg.in/go-playground/validator.v9"
+	val "github.com/go-playground/validator/v10"
 )
 
 type ValidError struct {
@@ -38,7 +38,7 @@ func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrors) {
 	if err != nil {
 		v := c.Value("trans")
 		trans, _ := v.(ut.Translator)
-		verrs, ok := err.(validator.ValidationErrors)
+		verrs, ok := err.(val.ValidationErrors)
 		if !ok {
 			return true, nil
 		}

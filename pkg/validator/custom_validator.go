@@ -4,19 +4,19 @@ import (
 	"reflect"
 	"sync"
 
-	"gopkg.in/go-playground/validator.v9"
+	val "github.com/go-playground/validator/v10"
 )
 
-type ValidatorV9 struct {
+type CustomValidator struct {
 	Once     sync.Once
-	Validate *validator.Validate
+	Validate *val.Validate
 }
 
-func NewValidatorV9() *ValidatorV9 {
-	return &ValidatorV9{}
+func NewCustomValidator() *CustomValidator {
+	return &CustomValidator{}
 }
 
-func (v *ValidatorV9) ValidateStruct(obj interface{}) error {
+func (v *CustomValidator) ValidateStruct(obj interface{}) error {
 	if kindOfData(obj) == reflect.Struct {
 		v.lazyinit()
 		if err := v.Validate.Struct(obj); err != nil {
@@ -27,14 +27,14 @@ func (v *ValidatorV9) ValidateStruct(obj interface{}) error {
 	return nil
 }
 
-func (v *ValidatorV9) Engine() interface{} {
+func (v *CustomValidator) Engine() interface{} {
 	v.lazyinit()
 	return v.Validate
 }
 
-func (v *ValidatorV9) lazyinit() {
+func (v *CustomValidator) lazyinit() {
 	v.Once.Do(func() {
-		v.Validate = validator.New()
+		v.Validate = val.New()
 		v.Validate.SetTagName("binding")
 	})
 }

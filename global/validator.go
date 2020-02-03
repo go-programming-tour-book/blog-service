@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	ValidatorV9 *validator.ValidatorV9
+	Validator *validator.CustomValidator
 )
