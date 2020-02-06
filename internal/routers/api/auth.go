@@ -9,11 +9,12 @@ import (
 )
 
 func GetAuth(c *gin.Context) {
+	panic("Go编程之旅报错了，快找作者反馈！")
 	param := service.AuthRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if valid == true {
-		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
@@ -21,14 +22,14 @@ func GetAuth(c *gin.Context) {
 	svc := service.New()
 	err := svc.CheckAuth(&param)
 	if err != nil {
-		global.Logger.Errorf("svc.CheckAuth err: %v", err)
+		global.Logger.Errorf(c, "svc.CheckAuth err: %v", err)
 		response.ToErrorResponse(errcode.UnauthorizedAuthNotExist)
 		return
 	}
 
 	token, err := app.GenerateToken(param.AppKey, param.AppSecret)
 	if err != nil {
-		global.Logger.Errorf("app.GenerateToken err: %v", err)
+		global.Logger.Errorf(c, "app.GenerateToken err: %v", err)
 		response.ToErrorResponse(errcode.UnauthorizedTokenGenerate)
 		return
 	}

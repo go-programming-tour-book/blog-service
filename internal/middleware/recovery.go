@@ -2,12 +2,15 @@ package middleware
 
 import (
 	"fmt"
-	"net/http"
 	"time"
+
+	"github.com/go-programming-tour-book/blog-service/pkg/email"
+
+	"github.com/go-programming-tour-book/blog-service/pkg/app"
+	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/global"
-	"github.com/go-programming-tour-book/blog-service/pkg/email"
 )
 
 func Recovery() gin.HandlerFunc {
@@ -19,22 +22,22 @@ func Recovery() gin.HandlerFunc {
 		Password: global.EmailSetting.Password,
 		From:     global.EmailSetting.From,
 	})
-
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				global.Logger.WithCallersFrames().Panicf("panic recover err: %v", err)
+				global.Logger.WithCallersFrames().Errorf(c, "panic recover err: %v", err)
 
 				err := defailtMailer.SendMail(
 					global.EmailSetting.To,
-					fmt.Sprintf("[Panic] Recover time: %d", time.Now().Unix()),
-					fmt.Sprintf("err: %v", err),
+					fmt.Sprintf("异常抛出，发生时间: %d", time.Now().Unix()),
+					fmt.Sprintf("错误信息: %v", err),
 				)
 				if err != nil {
-					global.Logger.Panicf("mail.SendMail err: %v", err)
+					global.Logger.Panicf(c, "mail.SendMail err: %v", err)
 				}
 
-				c.AbortWithStatus(http.StatusInternalServerError)
+				app.NewResponse(c).ToErrorResponse(errcode.ServerError)
+				c.Abort()
 			}
 		}()
 		c.Next()

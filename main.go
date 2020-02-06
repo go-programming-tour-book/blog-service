@@ -67,7 +67,10 @@ func main() {
 		WriteTimeout:   global.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
-	s.ListenAndServe()
+	err := s.ListenAndServe()
+	if err != nil {
+		log.Fatalf("s.ListenAndServe err: %v", err)
+	}
 }
 
 func setupFlag() error {

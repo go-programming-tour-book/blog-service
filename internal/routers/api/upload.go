@@ -26,7 +26,7 @@ func UploadFile(c *gin.Context) {
 	svc := service.New()
 	fileInfo, err := svc.UploadFile(upload.FileType(fileType), file, fileHeader)
 	if err != nil {
-		global.Logger.Errorf("svc.UploadFile err: %v", err)
+		global.Logger.Errorf(c, "svc.UploadFile err: %v", err)
 		response.ToErrorResponse(errcode.ERROR_UPLOAD_FILE_FAIL.WithDetails(err.Error()))
 		return
 	}
