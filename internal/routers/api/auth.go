@@ -9,7 +9,6 @@ import (
 )
 
 func GetAuth(c *gin.Context) {
-	panic("Go编程之旅报错了，快找作者反馈！")
 	param := service.AuthRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
