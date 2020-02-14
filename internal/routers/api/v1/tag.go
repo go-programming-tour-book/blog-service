@@ -35,7 +35,7 @@ func (t Tag) List(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
 	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
 	if err != nil {
@@ -73,7 +73,7 @@ func (t Tag) Create(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	err := svc.CreateTag(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CreateTag err: %v", err)
@@ -105,7 +105,7 @@ func (t Tag) Update(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	err := svc.UpdateTag(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.UpdateTag err: %v", err)
@@ -134,7 +134,7 @@ func (t Tag) Delete(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	err := svc.DeleteTag(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.DeleteTag err: %v", err)

@@ -136,7 +136,7 @@ func (l *Logger) WithTrace() *Logger {
 	if ok {
 		return l.WithFields(Fields{
 			"trace_id": ginCtx.MustGet("X-Trace-ID"),
-			"span_id":  ginCtx.MustGet("X-Trace-ID"),
+			"span_id":  ginCtx.MustGet("X-Span-ID"),
 		})
 	}
 	return l

@@ -1,21 +1,33 @@
 package middleware
 
+import "C"
 import (
+	"context"
+
+	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/go-programming-tour-book/blog-service/global"
 	"github.com/uber/jaeger-client-go"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-programming-tour-book/blog-service/global"
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
 func Tracing() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		ctx := c.Request.Context()
-		span := opentracing.SpanFromContext(ctx)
-		if span != nil {
-			span = global.Tracer.StartSpan(c.Request.URL.Path, opentracing.ChildOf(span.Context()))
+		var newCtx context.Context
+		var span opentracing.Span
+		spanCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(c.Request.Header))
+		if err != nil {
+			span, newCtx = opentracing.StartSpanFromContextWithTracer(c.Request.Context(), global.Tracer, c.Request.URL.Path)
 		} else {
-			span = global.Tracer.StartSpan(c.Request.URL.Path)
+			span, newCtx = opentracing.StartSpanFromContextWithTracer(
+				c.Request.Context(),
+				global.Tracer,
+				c.Request.URL.Path,
+				opentracing.ChildOf(spanCtx),
+				opentracing.Tag{Key: string(ext.Component), Value: "HTTP"},
+			)
 		}
 		defer span.Finish()
 
@@ -29,7 +41,7 @@ func Tracing() func(c *gin.Context) {
 		}
 		c.Set("X-Trace-ID", traceID)
 		c.Set("X-Span-ID", SpanID)
-
+		c.Request = c.Request.WithContext(newCtx)
 		c.Next()
 	}
 }

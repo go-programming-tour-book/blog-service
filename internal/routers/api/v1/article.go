@@ -32,7 +32,7 @@ func (a Article) Get(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	article, err := svc.GetArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.GetArticle err: %v", err)
@@ -65,7 +65,7 @@ func (a Article) List(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
 	articles, totalRows, err := svc.GetArticleList(&param, &pager)
 	if err != nil {
@@ -101,7 +101,7 @@ func (a Article) Create(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	err := svc.CreateArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CreateArticle err: %v", err)
@@ -135,7 +135,7 @@ func (a Article) Update(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	err := svc.UpdateArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.UpdateArticle err: %v", err)
@@ -164,7 +164,7 @@ func (a Article) Delete(c *gin.Context) {
 		return
 	}
 
-	svc := service.New()
+	svc := service.New(c.Request.Context())
 	err := svc.DeleteArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.DeleteArticle err: %v", err)
