@@ -27,7 +27,6 @@ func Translations() gin.HandlerFunc {
 			_ = zh_translations.RegisterDefaultTranslations(global.Validator.Validate, trans)
 			break
 		}
-
 		c.Set("trans", trans)
 		c.Next()
 	}

@@ -43,7 +43,7 @@ func NewRouter() *gin.Engine {
 	tag := v1.NewTag()
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/upload/file", api.UploadFile)
-	r.GET("/auth", api.GetAuth)
+	r.POST("/auth", api.GetAuth)
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 	apiv1 := r.Group("/api/v1")
 	apiv1.Use(middleware.JWT())
