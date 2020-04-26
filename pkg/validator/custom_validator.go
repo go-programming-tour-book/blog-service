@@ -20,7 +20,7 @@ func (v *CustomValidator) ValidateStruct(obj interface{}) error {
 	if kindOfData(obj) == reflect.Struct {
 		v.lazyinit()
 		if err := v.Validate.Struct(obj); err != nil {
-			return error(err)
+			return err
 		}
 	}
 
