@@ -13,11 +13,12 @@ import (
 func UploadFile(c *gin.Context) {
 	response := app.NewResponse(c)
 	file, fileHeader, err := c.Request.FormFile("file")
-	fileType := convert.StrTo(c.PostForm("type")).MustInt()
 	if err != nil {
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(err.Error()))
 		return
 	}
+
+	fileType := convert.StrTo(c.PostForm("type")).MustInt()
 	if fileHeader == nil || fileType <= 0 {
 		response.ToErrorResponse(errcode.InvalidParams)
 		return
