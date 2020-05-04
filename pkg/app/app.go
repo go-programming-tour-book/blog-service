@@ -2,7 +2,6 @@ package app
 
 import (
 	"net/http"
-	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
@@ -53,12 +52,4 @@ func (r *Response) ToErrorResponse(err *errcode.Error) {
 	}
 
 	r.Ctx.JSON(err.StatusCode(), response)
-}
-
-func IsNil(i interface{}) bool {
-	vi := reflect.ValueOf(i)
-	if vi.Kind() == reflect.Ptr {
-		return vi.IsNil()
-	}
-	return false
 }

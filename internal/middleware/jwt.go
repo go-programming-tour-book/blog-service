@@ -38,6 +38,7 @@ func JWT() gin.HandlerFunc {
 			response.ToErrorResponse(ecode)
 			c.Abort()
 			return
+
 		}
 
 		c.Next()

@@ -45,12 +45,13 @@ func (e *Error) Details() []string {
 }
 
 func (e *Error) WithDetails(details ...string) *Error {
-	e.details = []string{}
+	newError := *e
+	newError.details = []string{}
 	for _, d := range details {
-		e.details = append(e.details, d)
+		newError.details = append(newError.details, d)
 	}
 
-	return e
+	return &newError
 }
 
 func (e *Error) StatusCode() int {
