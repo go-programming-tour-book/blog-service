@@ -40,13 +40,13 @@ func (t Tag) List(c *gin.Context) {
 	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CountTag err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_COUNT_TAG_FAIL)
+		response.ToErrorResponse(errcode.ErrorCountTagFail)
 		return
 	}
 	tags, err := svc.GetTagList(&param, &pager)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.GetTagList err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_GET_TAG_LIST_FAIL)
+		response.ToErrorResponse(errcode.ErrorGetTagListFail)
 		return
 	}
 
@@ -77,7 +77,7 @@ func (t Tag) Create(c *gin.Context) {
 	err := svc.CreateTag(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CreateTag err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_CREATE_TAG_FAIL)
+		response.ToErrorResponse(errcode.ErrorCreateTagFail)
 		return
 	}
 
@@ -109,7 +109,7 @@ func (t Tag) Update(c *gin.Context) {
 	err := svc.UpdateTag(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.UpdateTag err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_UPDATE_TAG_FAIL)
+		response.ToErrorResponse(errcode.ErrorUpdateTagFail)
 		return
 	}
 
@@ -138,7 +138,7 @@ func (t Tag) Delete(c *gin.Context) {
 	err := svc.DeleteTag(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.DeleteTag err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_DELETE_TAG_FAIL)
+		response.ToErrorResponse(errcode.ErrorDeleteTagFail)
 		return
 	}
 

@@ -36,7 +36,7 @@ func (a Article) Get(c *gin.Context) {
 	article, err := svc.GetArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.GetArticle err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_GET_ARTICLE_FAIL)
+		response.ToErrorResponse(errcode.ErrorGetArticleFail)
 		return
 	}
 
@@ -70,7 +70,7 @@ func (a Article) List(c *gin.Context) {
 	articles, totalRows, err := svc.GetArticleList(&param, &pager)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.GetArticleList err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_GET_ARTICLES_FAIL)
+		response.ToErrorResponse(errcode.ErrorGetArticlesFail)
 		return
 	}
 
@@ -105,7 +105,7 @@ func (a Article) Create(c *gin.Context) {
 	err := svc.CreateArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.CreateArticle err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_CREATE_ARTICLE_FAIL)
+		response.ToErrorResponse(errcode.ErrorCreateArticleFail)
 		return
 	}
 
@@ -139,7 +139,7 @@ func (a Article) Update(c *gin.Context) {
 	err := svc.UpdateArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.UpdateArticle err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_UPDATE_ARTICLE_FAIL)
+		response.ToErrorResponse(errcode.ErrorUpdateArticleFail)
 		return
 	}
 
@@ -168,7 +168,7 @@ func (a Article) Delete(c *gin.Context) {
 	err := svc.DeleteArticle(&param)
 	if err != nil {
 		global.Logger.Errorf(c, "svc.DeleteArticle err: %v", err)
-		response.ToErrorResponse(errcode.ERROR_DELETE_ARTICLE_FAIL)
+		response.ToErrorResponse(errcode.ErrorDeleteArticleFail)
 		return
 	}
 
