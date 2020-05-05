@@ -49,8 +49,6 @@ definitions:
         type: integer
       state:
         type: integer
-      tag_id:
-        type: integer
       title:
         type: string
     type: object
