@@ -32,15 +32,16 @@ func Tracing() func(c *gin.Context) {
 		defer span.Finish()
 
 		var traceID string
-		var SpanID string
+		var spanID string
 		var spanContext = span.Context()
 		switch spanContext.(type) {
 		case jaeger.SpanContext:
-			traceID = spanContext.(jaeger.SpanContext).TraceID().String()
-			SpanID = spanContext.(jaeger.SpanContext).SpanID().String()
+			jaegerContext := spanContext.(jaeger.SpanContext)
+			traceID = jaegerContext.TraceID().String()
+			spanID = jaegerContext.SpanID().String()
 		}
 		c.Set("X-Trace-ID", traceID)
-		c.Set("X-Span-ID", SpanID)
+		c.Set("X-Span-ID", spanID)
 		c.Request = c.Request.WithContext(newCtx)
 		c.Next()
 	}

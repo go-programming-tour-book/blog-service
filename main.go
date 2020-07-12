@@ -156,8 +156,9 @@ func setupSetting() error {
 }
 
 func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
 	global.Logger = logger.NewLogger(&lumberjack.Logger{
-		Filename:  global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt,
+		Filename:  fileName,
 		MaxSize:   500,
 		MaxAge:    10,
 		LocalTime: true,

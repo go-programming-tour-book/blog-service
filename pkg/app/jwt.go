@@ -44,7 +44,8 @@ func ParseToken(token string) (*Claims, error) {
 		return nil, err
 	}
 	if tokenClaims != nil {
-		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+		claims, ok := tokenClaims.Claims.(*Claims)
+		if ok && tokenClaims.Valid {
 			return claims, nil
 		}
 	}
