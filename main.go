@@ -30,10 +30,6 @@ var (
 	runMode   string
 	config    string
 	isVersion bool
-
-	buildTime    string
-	buildVersion string
-	gitCommitID  string
 )
 
 func init() {
@@ -65,16 +61,9 @@ func init() {
 
 // @title 博客系统
 // @version 1.0
-// @description Go 编程之旅：一起用 Go 做项目
+// @description Go 语言编程之旅：一起用 Go 做项目
 // @termsOfService https://github.com/go-programming-tour-book
 func main() {
-	//if isVersion {
-	//	fmt.Printf("build_time: %s\n", buildTime)
-	//	fmt.Printf("build_version: %s\n", buildVersion)
-	//	fmt.Printf("git_commit_id: %s\n", gitCommitID)
-	//	return
-	//}
-
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
