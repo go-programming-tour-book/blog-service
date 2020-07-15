@@ -32,7 +32,7 @@ func (a Article) Create(db *gorm.DB) (*Article, error) {
 }
 
 func (a Article) Update(db *gorm.DB, values interface{}) error {
-	if err := db.Model(&a).Where("id = ? AND is_del = ?", a.ID).Updates(values).Error; err != nil {
+	if err := db.Model(&a).Where("id = ? AND is_del = ?", a.ID,0).Updates(values).Error; err != nil {
 		return err
 	}
 
