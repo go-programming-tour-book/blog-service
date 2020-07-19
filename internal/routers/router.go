@@ -17,12 +17,14 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
-var methodLimiters = limiter.NewMethodLimiter().AddBuckets(limiter.LimiterBucketRule{
-	Key:          "/auth",
-	FillInterval: time.Second,
-	Capacity:     10,
-	Quantum:      10,
-})
+var methodLimiters = limiter.NewMethodLimiter().AddBuckets(
+	limiter.LimiterBucketRule{
+		Key:          "/auth",
+		FillInterval: time.Second,
+		Capacity:     10,
+		Quantum:      10,
+	},
+)
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
@@ -41,13 +43,14 @@ func NewRouter() *gin.Engine {
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()
+	upload := api.NewUpload()
 	r.GET("/debug/vars", api.Expvar)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.POST("/upload/file", api.UploadFile)
+	r.POST("/upload/file", upload.UploadFile)
 	r.POST("/auth", api.GetAuth)
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 	apiv1 := r.Group("/api/v1")
-	apiv1.Use(middleware.JWT())
+	apiv1.Use() //middleware.JWT()
 	{
 		// 创建标签
 		apiv1.POST("/tags", tag.Create)

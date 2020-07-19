@@ -11,7 +11,7 @@ type Tag struct {
 	State uint8  `json:"state"`
 }
 
-func (a Tag) TableName() string {
+func (t Tag) TableName() string {
 	return "blog_tag"
 }
 

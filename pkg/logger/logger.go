@@ -96,7 +96,8 @@ func (l *Logger) WithCallersFrames() *Logger {
 	depth := runtime.Callers(minCallerDepth, pcs)
 	frames := runtime.CallersFrames(pcs[:depth])
 	for frame, more := frames.Next(); more; frame, more = frames.Next() {
-		callers = append(callers, fmt.Sprintf("%s: %d %s", frame.File, frame.Line, frame.Function))
+		s := fmt.Sprintf("%s: %d %s", frame.File, frame.Line, frame.Function)
+		callers = append(callers, s)
 		if !more {
 			break
 		}
