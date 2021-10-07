@@ -12,8 +12,9 @@ type MethodLimiter struct {
 }
 
 func NewMethodLimiter() LimiterIface {
+	l := &Limiter{limiterBuckets: make(map[string]*ratelimit.Bucket)}
 	return MethodLimiter{
-		Limiter: &Limiter{limiterBuckets: make(map[string]*ratelimit.Bucket)},
+		Limiter: l,
 	}
 }
 
@@ -35,7 +36,12 @@ func (l MethodLimiter) GetBucket(key string) (*ratelimit.Bucket, bool) {
 func (l MethodLimiter) AddBuckets(rules ...LimiterBucketRule) LimiterIface {
 	for _, rule := range rules {
 		if _, ok := l.limiterBuckets[rule.Key]; !ok {
-			l.limiterBuckets[rule.Key] = ratelimit.NewBucketWithQuantum(rule.FillInterval, rule.Capacity, rule.Quantum)
+			bucket := ratelimit.NewBucketWithQuantum(
+				rule.FillInterval,
+				rule.Capacity,
+				rule.Quantum,
+			)
+			l.limiterBuckets[rule.Key] = bucket
 		}
 	}
 
