@@ -12,6 +12,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-playground/locales/en"
+	"github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
+	validatorV10 "github.com/go-playground/validator/v10"
+	en_translations "github.com/go-playground/validator/v10/translations/en"
+	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 	"github.com/go-programming-tour-book/blog-service/pkg/tracer"
 
 	"github.com/gin-gonic/gin"
@@ -170,6 +176,22 @@ func setupValidator() error {
 	global.Validator = validator.NewCustomValidator()
 	global.Validator.Engine()
 	binding.Validator = global.Validator
+	uni := ut.New(en.New(), en.New(), zh.New())
+	v, ok := binding.Validator.Engine().(*validatorV10.Validate)
+	if ok {
+		zhTran, _ := uni.GetTranslator("zh")
+		enTran, _ := uni.GetTranslator("en")
+		err := zh_translations.RegisterDefaultTranslations(v, zhTran)
+		if err != nil {
+			return err
+		}
+		err = en_translations.RegisterDefaultTranslations(v, enTran)
+		if err != nil {
+			return err
+		}
+	}
+
+	global.Ut = uni
 
 	return nil
 }
