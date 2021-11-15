@@ -12,7 +12,8 @@ func Translations() gin.HandlerFunc {
 		if found {
 			c.Set("trans", trans)
 		} else {
-			c.Set("trans", "en")
+			enTran, _ := global.Ut.GetTranslator("en")
+			c.Set("trans", enTran)
 		}
 		c.Next()
 	}
