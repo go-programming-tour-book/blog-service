@@ -34,6 +34,14 @@ func (v ValidErrors) Errors() []string {
 
 func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrors) {
 	var errs ValidErrors
+	appKey := c.GetHeader("app_key")
+	appSecret := c.GetHeader("app_secret")
+	if appKey != "" && appSecret != "" {
+		v = struct {
+			app_key    string
+			app_secret string
+		}{app_key: appKey, app_secret: appSecret}
+	}
 	err := c.ShouldBind(v)
 	if err != nil {
 		v := c.Value("trans")
